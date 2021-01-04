@@ -21,6 +21,16 @@ void outputMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight){
     }
 }
 
+void multiplMatrixAndNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight){
+    double num = 0;
+    cout << "Input number: ";
+    cin >> num;
+    for(int i = 0; i < matrixHeight; i++){
+        for(int j = 0; j < matrixWight; j++){
+            matrix[i][j] = matrix[i][j]*num;
+        }
+    }
+}
 
 int main (){
     int n = 0, m = 0;
@@ -32,6 +42,7 @@ int main (){
 
     double matrix[MAX_SIZE][MAX_SIZE];
     inputMatrix(matrix, m, n);
+    multiplMatrixAndNum(matrix, m, n);
     outputMatrix(matrix, m, n);
 
 return 0;
