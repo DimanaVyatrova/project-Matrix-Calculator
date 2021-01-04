@@ -43,6 +43,22 @@ void divideMatrixByNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixW
     }
 }
 
+void transposeMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+    double matrix_copy[MAX_SIZE][MAX_SIZE];
+    //Copying matrix
+    for(int i = 0; i < matrixHeight; i++) {
+        for(int j = 0; j < matrixWight; j++) {
+           matrix_copy[i][j] = matrix[i][j];
+        }
+    }
+    //Transposing matrix
+    for(int i = 0; i < matrixHeight; i++) {
+        for(int j = 0; j < matrixWight; j++) {
+           matrix[j][i] = matrix_copy[i][j];
+        }
+    }
+}
+
 int main (){
     int n = 0, m = 0;
     cout << "Input matrix wight: ";
@@ -53,6 +69,7 @@ int main (){
 
     double matrix[MAX_SIZE][MAX_SIZE];
     inputMatrix(matrix, m, n);
+    transposeMatrix(matrix, m, n);
     outputMatrix(matrix, n, m);
 
 return 0;
