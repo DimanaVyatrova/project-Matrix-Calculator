@@ -59,6 +59,37 @@ void transposeMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWigh
     }
 }
 
+void multiplMatrixByMatrix (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+    //Initializing and inputing the second matrix
+    double matrix2[MAX_SIZE][MAX_SIZE];
+    int matrix2Height = 0, matrix2Wight = 0;
+    cout << "Input matrix wight: ";
+    cin >> matrix2Wight;
+    cout << "Input matrix height: ";
+    cin >> matrix2Height;
+    inputMatrix(matrix2, matrix2Height, matrix2Wight);
+
+    //Initializing the matrix, which will store the result
+    double resultMatrix[MAX_SIZE][MAX_SIZE];
+    //Setting it's values to zero
+    for(int i = 0; i < matrix2Wight; i++) {
+        for(int j = 0; j < matrixHeight; j++) {
+            resultMatrix[i][j] = 0;
+        }
+    }
+
+    //Multiply both matrices and store the result is the result matrix
+    for(int i = 0; i < matrix2Wight; i++) {
+        for(int j = 0; j < matrixHeight; j++) {
+            for(int k = 0; k < matrix2Height; k ++) {
+                resultMatrix[i][j] += matrix[i][k] * matrix2[k][j];
+            }
+        }
+    }
+
+    outputMatrix(resultMatrix, matrixHeight, matrix2Wight);
+}
+
 int main (){
     int n = 0, m = 0;
     cout << "Input matrix wight: ";
@@ -69,8 +100,9 @@ int main (){
 
     double matrix[MAX_SIZE][MAX_SIZE];
     inputMatrix(matrix, m, n);
-    transposeMatrix(matrix, m, n);
-    outputMatrix(matrix, n, m);
+    multiplMatrixByMatrix(matrix, m, n);
+    //outputMatrix(matrix, m, n);
+
 
 return 0;
 }
