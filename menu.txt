@@ -1,0 +1,6 @@
+1. Multiply it by a number
+2. Multiply it with another matrix
+3. Find it's determinant
+4. Divide it by a number
+5. Find it's inverse matrix
+6. Transpose it
