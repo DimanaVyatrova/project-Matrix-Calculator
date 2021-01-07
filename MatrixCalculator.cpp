@@ -4,16 +4,16 @@ using namespace std;
 
 const int MAX_SIZE = 100;
 
-double myPow (double a, double b){
+double myPow (double a, double b) {
     double res = 1;
-    if(b >= 0){
-       for(int i = 0; i < b; i++){
+    if(b >= 0) {
+       for(int i = 0; i < b; i++) {
          res = res*a;
       }
     }
     else {
         b = -b;
-        for(int i = 0; i < b; i++){
+        for(int i = 0; i < b; i++) {
             res = res*(1/a);
         }
     }
@@ -39,10 +39,8 @@ void outputMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) 
     cout << endl;
 }
 
-void multiplMatrixAndNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
-    double num = 0;
-    cout << "Input number: ";
-    cin >> num;
+void multiplMatrixAndNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight, double num) {
+
     for(int i = 0; i < matrixHeight; i++) {
         for(int j = 0; j < matrixWight; j++) {
             matrix[i][j] = matrix[i][j]*num;
@@ -121,6 +119,16 @@ double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
     double cofMat[MAX_SIZE][MAX_SIZE];
     double det = 0;
 
+    if(matrixHeight == 2) {
+        det = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+        return det;
+    }
+
+    if(matrixHeight == 3) {
+        det = find_det_3_by_3(matrix);
+        return det;
+    }
+
     for(int c = 0; c < matrixWight; c++) {
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
@@ -132,11 +140,54 @@ double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
                 }
             }
         }
-        //outputMatrix(cofMat, 3, 3);
-        //cout << "det = " << find_det_3_by_3(cofMat) << endl;
+        outputMatrix(cofMat, 3, 3);
         det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
     }
     return det;
+}
+
+void findCofactor(double matrix[][MAX_SIZE], double cofMat[][MAX_SIZE], int matrixHeight, int matrixWight, int row, int col) {
+        cout << "row = " << row << endl;
+        cout << "col = " << col << endl;
+        for(int i = 0; i < matrixWight - 1; i++) {
+            for(int j = 0; j < matrixHeight - 1; j++) {
+                if(i < row && j < col) {
+                    cofMat[i][j] = matrix[i][j];
+                }
+                else if(i >= row && j < col) {
+                    cofMat[i][j] = matrix[i + 1][j];
+                }
+                else if(i >= row && j >= col) {
+                    cofMat[i][j] = matrix[i + 1][j + 1];
+                }
+                else if(i < row && j >= col) {
+                    cofMat[i][j] = matrix[i][j + 1];
+                }
+            }
+        }
+}
+
+void findInverseMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+    double det = findDet(matrix, matrixHeight, matrixWight);
+    double matrix_Copy[MAX_SIZE][MAX_SIZE];
+    for(int i = 0; i < matrixHeight; i++) {
+        for(int j = 0; j < matrixWight; j++) {
+            matrix_Copy[i][j] = matrix[i][j];
+        }
+    }
+
+    double cofMat[MAX_SIZE][MAX_SIZE];
+    for(int i = 0; i < matrixHeight; i++) { //row
+        for(int j = 0; j < matrixWight; j++) { //col
+            findCofactor(matrix_Copy, cofMat, matrixHeight, matrixWight, i, j);
+            outputMatrix(cofMat, matrixHeight - 1, matrixWight - 1);
+            matrix[i][j] = myPow(-1, i + j) * findDet(cofMat, matrixHeight - 1, matrixWight - 1);
+        }
+    }
+
+    transposeMatrix(matrix, matrixHeight, matrixWight);
+    multiplMatrixAndNum(matrix, matrixHeight, matrixWight, 1/det);
+    outputMatrix(matrix, matrixHeight, matrixWight);
 }
 
 int main (){
@@ -149,14 +200,10 @@ int main (){
 
     double matrix[MAX_SIZE][MAX_SIZE];
     inputMatrix(matrix, m, n);
-    //findDet(matrix, m, n);
-    //outputMatrix(matrix, m, n);
-    cout << findDet(matrix, m, n);
-
+    findInverseMatrix(matrix, m, n);
 
 return 0;
 }
-/*5 1 -4 0
--1 2 0 3
-1 1 -7 -2
-5 -3 3 0*/
+/*1 2 3
+-1 -2 5
+0 1 1*/
