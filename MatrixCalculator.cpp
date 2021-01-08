@@ -89,27 +89,34 @@ void multiplMatrixByMatrix (double matrix[][MAX_SIZE], int matrixHeight, int mat
     cin >> matrix2Wight;
     cout << "Input matrix height: ";
     cin >> matrix2Height;
-    inputMatrix(matrix2, matrix2Height, matrix2Wight);
 
-    //Initializing the matrix, which will store the result
-    double resultMatrix[MAX_SIZE][MAX_SIZE];
-    //Setting it's values to zero
-    for(int i = 0; i < matrix2Wight; i++) {
-        for(int j = 0; j < matrixHeight; j++) {
-            resultMatrix[i][j] = 0;
-        }
+    //validation
+    if (matrixWight != matrix2Height){
+        cout << "Invalid value";
     }
+    else{
+        inputMatrix(matrix2, matrix2Height, matrix2Wight);
 
-    //Multiply both matrices and store the result is the result matrix
-    for(int i = 0; i < matrix2Wight; i++) {
-        for(int j = 0; j < matrixHeight; j++) {
-            for(int k = 0; k < matrix2Height; k ++) {
-                resultMatrix[i][j] += matrix[i][k] * matrix2[k][j];
+        //Initializing the matrix, which will store the result
+        double resultMatrix[MAX_SIZE][MAX_SIZE];
+        //Setting it's values to zero
+        for(int i = 0; i < matrix2Wight; i++) {
+            for(int j = 0; j < matrixHeight; j++) {
+                resultMatrix[i][j] = 0;
             }
         }
-    }
 
-    outputMatrix(resultMatrix, matrixHeight, matrix2Wight);
+        //Multiply both matrices and store the result is the result matrix
+        for(int i = 0; i < matrix2Wight; i++) {
+            for(int j = 0; j < matrixHeight; j++) {
+                for(int k = 0; k < matrix2Height; k ++) {
+                    resultMatrix[i][j] += matrix[i][k] * matrix2[k][j];
+                }
+            }
+        }
+
+        outputMatrix(resultMatrix, matrixHeight, matrix2Wight);
+    }
 }
 
 double find_det_3_by_3(double mat[][MAX_SIZE]) {
@@ -122,55 +129,63 @@ double find_det_3_by_3(double mat[][MAX_SIZE]) {
 }
 
 double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
-    double cofMat[MAX_SIZE][MAX_SIZE];
-    double det = 0;
 
-    if(matrixHeight == 2) {
-        det = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
-        return det;
-    }
+    if (matrixHeight != 0) {
 
-    if(matrixHeight == 3) {
-        det = find_det_3_by_3(matrix);
-        return det;
-    }
+        double cofMat[MAX_SIZE][MAX_SIZE];
+        double det = 0;
 
-    for(int c = 0; c < matrixWight; c++) {
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                if(j >= c){
-                    cofMat[i][j] = matrix[i + 1][j + 1];
-                }
-                else {
-                    cofMat[i][j] = matrix[i + 1][j];
+        if(matrixHeight == 2) {
+            det = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+            return det;
+        }
+
+        if(matrixHeight == 3) {
+            det = find_det_3_by_3(matrix);
+            return det;
+        }
+
+        for(int c = 0; c < matrixWight; c++) {
+            for(int i = 0; i < 3; i++) {
+                for(int j = 0; j < 3; j++) {
+                    if(j >= c){
+                        cofMat[i][j] = matrix[i + 1][j + 1];
+                    }
+                    else {
+                        cofMat[i][j] = matrix[i + 1][j];
+                    }
                 }
             }
+            outputMatrix(cofMat, 3, 3);
+            det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
         }
-        outputMatrix(cofMat, 3, 3);
-        det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
+        return det;
     }
-    return det;
+
+    else if (matrixHeight == 1) {
+        return matrix[0][0];
+    }
 }
 
 void findCofactor(double matrix[][MAX_SIZE], double cofMat[][MAX_SIZE], int matrixHeight, int matrixWight, int row, int col) {
-        cout << "row = " << row << endl;
-        cout << "col = " << col << endl;
-        for(int i = 0; i < matrixWight - 1; i++) {
-            for(int j = 0; j < matrixHeight - 1; j++) {
-                if(i < row && j < col) {
-                    cofMat[i][j] = matrix[i][j];
-                }
-                else if(i >= row && j < col) {
-                    cofMat[i][j] = matrix[i + 1][j];
-                }
-                else if(i >= row && j >= col) {
-                    cofMat[i][j] = matrix[i + 1][j + 1];
-                }
-                else if(i < row && j >= col) {
-                    cofMat[i][j] = matrix[i][j + 1];
-                }
+    cout << "row = " << row << endl;
+    cout << "col = " << col << endl;
+    for(int i = 0; i < matrixWight - 1; i++) {
+        for(int j = 0; j < matrixHeight - 1; j++) {
+            if(i < row && j < col) {
+                cofMat[i][j] = matrix[i][j];
+            }
+            else if(i >= row && j < col) {
+                cofMat[i][j] = matrix[i + 1][j];
+            }
+            else if(i >= row && j >= col) {
+                cofMat[i][j] = matrix[i + 1][j + 1];
+            }
+            else if(i < row && j >= col) {
+                cofMat[i][j] = matrix[i][j + 1];
             }
         }
+    }
 }
 
 void findInverseMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
@@ -229,75 +244,116 @@ int main (){
     if(operation == 1) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        cout << "Please input the number" << endl;
-        int num = 0;
-        cin >> num;
-        multiplMatrixAndNum(matrix, m, n, num);
-        outputMatrix(matrix, m, n);
+
+        //validation
+        if (n <= 0 || m <= 0) {
+            cout << "invalid value";
+        }
+        else {
+            inputMatrix(matrix, m, n);
+            cout << "Please input the number" << endl;
+            int num = 0;
+            cin >> num;
+            multiplMatrixAndNum(matrix, m, n, num);
+            outputMatrix(matrix, m, n);
+        }
+
     }
 
     if(operation == 2) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        multiplMatrixByMatrix(matrix, m, n);
+
+        //validation
+        if (n <= 0 || m <= 0) {
+            cout << "Invalid value";
+        }
+        else{
+            inputMatrix(matrix, m, n);
+            multiplMatrixByMatrix(matrix, m, n);
+        }
     }
 
     if(operation == 3) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        cout << "The determinant is: " << findDet(matrix, m, n);
+        //validation
+        if (n != m || n <= 0 || m <= 0) {
+            cout << "Invalid value";
+        }
+        else {
+            inputMatrix(matrix, m, n);
+            cout << "The determinant is: " << findDet(matrix, m, n);
+        }
+
     }
 
     if (operation == 4) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        cout << "Please input the number" << endl;
-        int num = 0;
-        cin >> num;
-        if(num == 0){
-            cout << "Can't divide by zero! Sorry :(" << endl;
+
+        //validation
+        if (n <= 0 || m <= 0) {
+            cout << "Invalid value";
         }
-        else{
-            divideMatrixByNum(matrix, m, n, num);
-            outputMatrix(matrix, m, n);
+        else {
+            inputMatrix(matrix, m, n);
+            cout << "Please input the number" << endl;
+            int num = 0;
+            cin >> num;
+            //validation for num
+            if(num == 0){
+                cout << "Can't divide by zero! Sorry :(" << endl;
+            }
+            else{
+                divideMatrixByNum(matrix, m, n, num);
+                outputMatrix(matrix, m, n);
+            }
         }
+
     }
 
     if(operation == 5) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        findInverseMatrix(matrix, m, n);
+
+        //validation
+        if (n != m || n <= 0 || m <= 0) {
+            cout << "Invalid value";
+        }
+        else {
+            inputMatrix(matrix, m, n);
+            findInverseMatrix(matrix, m, n);
+        }
+
     }
 
     if(operation == 6) {
         cout << "Input matrix wight: ";
         cin >> n;
-
         cout << "Input matrix height: ";
         cin >> m;
-        inputMatrix(matrix, m, n);
-        transposeMatrix(matrix, m, n);
-        outputMatrix(matrix, n, m);
+
+        //validation
+        if (n <= 0 || m <= 0){
+            cout << "invalid value";
+        }
+        else {
+            inputMatrix(matrix, m, n);
+            transposeMatrix(matrix, m, n);
+            outputMatrix(matrix, n, m);
+        }
+
     }
 
 
