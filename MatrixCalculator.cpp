@@ -1,11 +1,10 @@
 //Notes to me
 //func inverse matrix doesn't work with 2x2 matrix
+//delete
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 using namespace std;
-
-const int MAX_SIZE = 100;
 
 double myPow (double a, double b) {
     double res = 1;
@@ -24,7 +23,7 @@ double myPow (double a, double b) {
     return res;
 }
 
-void inputMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+void inputMatrix(double **matrix, int matrixHeight, int matrixWight) {
 
     cout << "Now input the matrix itself" << endl;
     for(int i = 0; i < matrixHeight; i++) {
@@ -34,18 +33,19 @@ void inputMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
     }
 }
 
-void outputMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
-    cout << "Here is the result" << endl;
+void outputMatrix(double **matrix, int matrixHeight, int matrixWight) {
     for(int i = 0; i < matrixHeight; i++) {
+        cout << "|| ";
         for(int j = 0; j < matrixWight; j++) {
             cout << setw(4) << matrix[i][j] << " ";
         }
+        cout << "||";
         cout << endl;
     }
-    cout << endl;
+    //cout << endl;
 }
 
-void multiplMatrixAndNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight, double num) {
+void multiplMatrixAndNum (double **matrix, int matrixHeight, int matrixWight, double num) {
 
     for(int i = 0; i < matrixHeight; i++) {
         for(int j = 0; j < matrixWight; j++) {
@@ -54,7 +54,7 @@ void multiplMatrixAndNum (double matrix[][MAX_SIZE], int matrixHeight, int matri
     }
 }
 
-void divideMatrixByNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight, double num) {
+void divideMatrixByNum (double **matrix, int matrixHeight, int matrixWight, double num) {
 
     for(int i = 0; i < matrixHeight; i++) {
         for(int j = 0; j < matrixWight; j++) {
@@ -63,8 +63,8 @@ void divideMatrixByNum (double matrix[][MAX_SIZE], int matrixHeight, int matrixW
     }
 }
 
-void transposeMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
-    double matrix_copy[MAX_SIZE][MAX_SIZE];
+void transposeMatrix(double **matrix, int matrixHeight, int matrixWight) {
+    double **matrix_copy = new double*[matrixHeight];
     //Copying matrix
     for(int i = 0; i < matrixHeight; i++) {
         for(int j = 0; j < matrixWight; j++) {
@@ -78,11 +78,14 @@ void transposeMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWigh
            matrix[i][j] = matrix_copy[j][i];
         }
     }
+    for (int i = 0; i < matrixHeight; i++) {
+         delete []matrix_copy[i];
+    }
+    delete []matrix_copy;
 }
 
-void multiplMatrixByMatrix (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWight) {
     //Initializing and inputing the second matrix
-    double matrix2[MAX_SIZE][MAX_SIZE];
     int matrix2Height = 0, matrix2Wight = 0;
     cout << "Now input the second matrix" << endl;
     cout << "Input matrix wight: ";
@@ -95,10 +98,17 @@ void multiplMatrixByMatrix (double matrix[][MAX_SIZE], int matrixHeight, int mat
         cout << "Invalid value";
     }
     else{
+        double **matrix2 = new double*[matrix2Height];
+        for (int i = 0; i < matrix2Height; i++) {
+            matrix2[i] = new double[matrix2Wight];
+        }
         inputMatrix(matrix2, matrix2Height, matrix2Wight);
 
         //Initializing the matrix, which will store the result
-        double resultMatrix[MAX_SIZE][MAX_SIZE];
+        double **resultMatrix = new double*[matrixHeight];
+        for (int i = 0; i < matrixHeight; i++) {
+            resultMatrix[i] = new double[matrix2Wight];
+        }
         //Setting it's values to zero
         for(int i = 0; i < matrix2Wight; i++) {
             for(int j = 0; j < matrixHeight; j++) {
@@ -116,10 +126,18 @@ void multiplMatrixByMatrix (double matrix[][MAX_SIZE], int matrixHeight, int mat
         }
 
         outputMatrix(resultMatrix, matrixHeight, matrix2Wight);
+        for (int i = 0; i < matrixHeight; i++) {
+             delete []resultMatrix[i];
+        }
+        delete []resultMatrix;
+        for (int i = 0; i < matrix2Height; i++) {
+             delete []matrix2[i];
+        }
+        delete []matrix2;
     }
 }
 
-double find_det_3_by_3(double mat[][MAX_SIZE]) {
+double find_det_3_by_3(double **mat) {
     double det = 0;
 
     det = mat[0][0] * mat[1][1] * mat[2][2] + mat[0][1] * mat[1][2] * mat[2][0] + mat[0][2] * mat[1][0] * mat[2][1]
@@ -128,11 +146,10 @@ double find_det_3_by_3(double mat[][MAX_SIZE]) {
     return det;
 }
 
-double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+double findDet (double **matrix, int matrixHeight, int matrixWight) {
 
-    if (matrixHeight != 0) {
+    if (matrixHeight != 1) {
 
-        double cofMat[MAX_SIZE][MAX_SIZE];
         double det = 0;
 
         if(matrixHeight == 2) {
@@ -145,6 +162,10 @@ double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
             return det;
         }
 
+        double **cofMat = new double*[matrixHeight - 1];
+        for (int i = 0; i < matrixHeight - 1; i++) {
+            cofMat[i] = new double[matrixWight - 1];
+        }
         for(int c = 0; c < matrixWight; c++) {
             for(int i = 0; i < 3; i++) {
                 for(int j = 0; j < 3; j++) {
@@ -159,6 +180,10 @@ double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
             outputMatrix(cofMat, 3, 3);
             det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
         }
+        for (int i = 0; i < matrixHeight - 1; i++) {
+             delete []cofMat[i];
+        }
+        delete []cofMat;
         return det;
     }
 
@@ -167,9 +192,9 @@ double findDet (double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
     }
 }
 
-void findCofactor(double matrix[][MAX_SIZE], double cofMat[][MAX_SIZE], int matrixHeight, int matrixWight, int row, int col) {
-    cout << "row = " << row << endl;
-    cout << "col = " << col << endl;
+void findCofactor(double **matrix, double **cofMat, int matrixHeight, int matrixWight, int row, int col) {
+    //cout << "row = " << row << endl;
+    //cout << "col = " << col << endl;
     for(int i = 0; i < matrixWight - 1; i++) {
         for(int j = 0; j < matrixHeight - 1; j++) {
             if(i < row && j < col) {
@@ -188,26 +213,41 @@ void findCofactor(double matrix[][MAX_SIZE], double cofMat[][MAX_SIZE], int matr
     }
 }
 
-void findInverseMatrix(double matrix[][MAX_SIZE], int matrixHeight, int matrixWight) {
+void findInverseMatrix(double **matrix, int matrixHeight, int matrixWight) {
     double det = findDet(matrix, matrixHeight, matrixWight);
-    double matrix_Copy[MAX_SIZE][MAX_SIZE];
+
+    //Initializing the matrix which will store the copy
+    double **matrix_Copy = new double*[matrixHeight];
+    for(int i = 0; i < matrixHeight; i++) {
+        matrix_Copy[i] = new double[matrixWight];
+    }
+    //Copying matrix
     for(int i = 0; i < matrixHeight; i++) {
         for(int j = 0; j < matrixWight; j++) {
             matrix_Copy[i][j] = matrix[i][j];
         }
     }
 
-    double cofMat[MAX_SIZE][MAX_SIZE];
+    double **cofMat = new double*[matrixHeight - 1];
+    for(int i = 0; i < matrixHeight - 1; i++) {
+        cofMat[i] = new double[matrixWight - 1];
+    }
     for(int i = 0; i < matrixHeight; i++) { //row
         for(int j = 0; j < matrixWight; j++) { //col
             findCofactor(matrix_Copy, cofMat, matrixHeight, matrixWight, i, j);
             matrix[i][j] = myPow(-1, i + j) * findDet(cofMat, matrixHeight - 1, matrixWight - 1);
         }
     }
-
+    for (int i = 0; i < matrixHeight - 1; i++) {
+         delete []cofMat[i];
+    }
+    delete []cofMat;
+    for (int i = 0; i < matrixHeight; i++) {
+         delete []matrix_Copy[i];
+    }
+    delete []matrix_Copy;
     transposeMatrix(matrix, matrixHeight, matrixWight);
     multiplMatrixAndNum(matrix, matrixHeight, matrixWight, 1/det);
-    outputMatrix(matrix, matrixHeight, matrixWight);
 }
 
 int main (){
@@ -239,12 +279,11 @@ int main (){
     cin >> operation;
 
     int m = 0, n = 0;
-    double matrix[MAX_SIZE][MAX_SIZE];
 
     if(operation == 1) {
-        cout << "Input matrix wight: ";
+        cout << "Input matrix wight: "; //cols
         cin >> n;
-        cout << "Input matrix height: ";
+        cout << "Input matrix height: "; //rows
         cin >> m;
 
         //validation
@@ -252,12 +291,21 @@ int main (){
             cout << "invalid value";
         }
         else {
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             cout << "Please input the number" << endl;
             int num = 0;
             cin >> num;
+            cout << "Here is the result" << endl;
             multiplMatrixAndNum(matrix, m, n, num);
             outputMatrix(matrix, m, n);
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
 
     }
@@ -273,8 +321,16 @@ int main (){
             cout << "Invalid value";
         }
         else{
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             multiplMatrixByMatrix(matrix, m, n);
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
     }
 
@@ -288,8 +344,16 @@ int main (){
             cout << "Invalid value";
         }
         else {
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             cout << "The determinant is: " << findDet(matrix, m, n);
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
 
     }
@@ -305,6 +369,10 @@ int main (){
             cout << "Invalid value";
         }
         else {
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             cout << "Please input the number" << endl;
             int num = 0;
@@ -317,6 +385,10 @@ int main (){
                 divideMatrixByNum(matrix, m, n, num);
                 outputMatrix(matrix, m, n);
             }
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
 
     }
@@ -332,8 +404,17 @@ int main (){
             cout << "Invalid value";
         }
         else {
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             findInverseMatrix(matrix, m, n);
+            outputMatrix(matrix, m, n);
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
 
     }
@@ -349,9 +430,17 @@ int main (){
             cout << "invalid value";
         }
         else {
+            double **matrix = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix[i] = new double[n];
+            }
             inputMatrix(matrix, m, n);
             transposeMatrix(matrix, m, n);
             outputMatrix(matrix, n, m);
+            for (int i = 0; i < n; i++) {
+                 delete []matrix[i];
+            }
+            delete []matrix;
         }
 
     }
