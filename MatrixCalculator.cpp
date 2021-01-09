@@ -45,6 +45,108 @@ void outputMatrix(double **matrix, int matrixHeight, int matrixWight) {
     //cout << endl;
 }
 
+void outputWithMultipl (double **matrix_copy, double **matrix, int matrixHeight, int matrixWight, double num) {
+    for (int i = 0; i < matrixHeight; i++) {
+        cout << "| ";
+        for (int j = 0; j < matrixWight; j++) {
+            cout << setw(3) << matrix_copy[i][j];
+        }
+        cout << " |";
+        if(i == 0) {
+            cout << " * " << num << " = ";
+        }
+        else {
+            cout << "       ";
+        }
+        //cout << "------------   ";
+        cout << "| ";
+        for (int j = 0; j < matrixWight; j++) {
+            cout << setw(3) << matrix[i][j];
+        }
+        cout << " |";
+        cout << endl;
+    }
+
+}
+
+void outputWithDivide (double **matrix_copy, double **matrix, int matrixHeight, int matrixWight, double num) {
+
+    for (int i = 0; i < matrixHeight; i++) {
+        cout << "| ";
+        for (int j = 0; j < matrixWight; j++) {
+            cout << setw(4) << matrix_copy[i][j];
+        }
+        cout << " |";
+        if(i == 0) {
+            cout << " / " << num << " = ";
+        }
+        else {
+            cout << "       ";
+        }
+
+        cout << "| ";
+        for (int j = 0; j < matrixWight; j++) {
+            cout << setw(3) << matrix[i][j];
+        }
+        cout << " |";
+        cout << endl;
+    }
+}
+
+void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMatrix, int mHeight, int mWight, int m2Height, int m2Wight) {
+    int maxH = mHeight, maxW = mWight;
+    if (mHeight < m2Height) {
+        maxH = m2Height;
+    }
+    if (mWight < m2Wight) {
+        maxW = m2Wight;
+    }
+    for (int i = 0; i < maxH; i++) {
+
+        if (i < mHeight) {
+            cout << "| ";
+            for(int j = 0; j < mWight; j ++) {
+                cout << setw(3) << matrix[i][j];
+            }
+            cout << " |";
+        }
+        if (i == 0) {
+            cout << " * ";
+        }
+        else {
+            cout << "   ";
+        }
+
+        if (i < m2Height) {
+            if(i >= mHeight) {
+                cout << setw(3*mWight + 3 + 3);
+            }
+            cout << "| ";
+            for (int j = 0; j < m2Wight; j++) {
+                cout << setw(3) << matrix2[i][j];
+            }
+            cout << " |";
+        }
+        if (i == 0) {
+            cout << " = ";
+        }
+        else {
+            cout << "   ";
+        }
+
+        if(i < mHeight) {
+            cout << "| ";
+            for(int j = 0; j < m2Wight; j++) {
+                cout << setw(3) << resultMatrix[i][j];
+            }
+            cout << " |";
+        }
+        cout << endl;
+    }
+
+
+}
+
 void multiplMatrixAndNum (double **matrix, int matrixHeight, int matrixWight, double num) {
 
     for(int i = 0; i < matrixHeight; i++) {
@@ -94,6 +196,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWight) 
     cin >> matrix2Height;
 
     //validation
+    cout << matrixWight << " " << matrix2Height << endl;
     if (matrixWight != matrix2Height){
         cout << "Invalid value";
     }
@@ -109,6 +212,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWight) 
         for (int i = 0; i < matrixHeight; i++) {
             resultMatrix[i] = new double[matrix2Wight];
         }
+
         //Setting it's values to zero
         for(int i = 0; i < matrix2Wight; i++) {
             for(int j = 0; j < matrixHeight; j++) {
@@ -116,7 +220,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWight) 
             }
         }
 
-        //Multiply both matrices and store the result is the result matrix
+        //Multiply both matrices and store the result in the result matrix
         for(int i = 0; i < matrix2Wight; i++) {
             for(int j = 0; j < matrixHeight; j++) {
                 for(int k = 0; k < matrix2Height; k ++) {
@@ -124,8 +228,9 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWight) 
                 }
             }
         }
+        cout << "here3" << endl;
+        outputMatrixByMatrix(matrix, matrix2, resultMatrix, matrixHeight, matrixWight, matrix2Height, matrix2Wight);
 
-        outputMatrix(resultMatrix, matrixHeight, matrix2Wight);
         for (int i = 0; i < matrixHeight; i++) {
              delete []resultMatrix[i];
         }
@@ -296,16 +401,30 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
+            double **matrix_copy = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix_copy[i] = new double[n];
+            }
+            for(int i = 0; i < m; i++) {
+                for(int j = 0; j < n; j++) {
+                    matrix_copy[i][j] = matrix[i][j];
+                }
+            }
             cout << "Please input the number" << endl;
             int num = 0;
             cin >> num;
             cout << "Here is the result" << endl;
             multiplMatrixAndNum(matrix, m, n, num);
-            outputMatrix(matrix, m, n);
-            for (int i = 0; i < n; i++) {
+            outputWithMultipl(matrix_copy, matrix, m, n, num);
+            for (int i = 0; i < m; i++) {
                  delete []matrix[i];
             }
             delete []matrix;
+            for (int i = 0; i < m; i++) {
+                 delete []matrix_copy[i];
+            }
+            delete []matrix_copy;
         }
 
     }
@@ -382,13 +501,30 @@ int main (){
                 cout << "Can't divide by zero! Sorry :(" << endl;
             }
             else{
-                divideMatrixByNum(matrix, m, n, num);
-                outputMatrix(matrix, m, n);
+            double **matrix_copy = new double*[m];
+            for(int i = 0; i < m; i++) {
+                matrix_copy[i] = new double[n];
             }
-            for (int i = 0; i < n; i++) {
+            for(int i = 0; i < m; i++) {
+                for(int j = 0; j < n; j++) {
+                    matrix_copy[i][j] = matrix[i][j];
+                }
+            }
+
+                divideMatrixByNum(matrix, m, n, num);
+                outputWithDivide(matrix_copy, matrix, m, n, num);
+                for (int i = 0; i < m; i++) {
+                     delete []matrix_copy[i];
+                }
+                delete []matrix_copy;
+
+            }
+
+            for (int i = 0; i < m; i++) {
                  delete []matrix[i];
             }
             delete []matrix;
+
         }
 
     }
@@ -444,8 +580,6 @@ int main (){
         }
 
     }
-
-
 
 return 0;
 }
