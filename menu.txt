@@ -1,6 +1,6 @@
-1. Multiply it by a number
-2. Multiply it with another matrix
-3. Find it's determinant
-4. Divide it by a number
-5. Find it's inverse matrix
-6. Transpose it
+1. Multiply a matrix by a number
+2. Multiply it a matrix another matrix
+3. Find a matrix's determinant
+4. Divide a matrix by a number
+5. Find the inverse matrix of a matrix
+6. Transpose a matrix
