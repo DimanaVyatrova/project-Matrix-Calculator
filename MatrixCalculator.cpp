@@ -8,14 +8,14 @@ using namespace std;
 
 double myPow (double a, double b) {
     double res = 1;
-    if(b >= 0) {
-       for(int i = 0; i < b; i++) {
+    if (b >= 0) {
+       for (int i = 0; i < b; i++) {
          res = res*a;
       }
     }
     else {
         b = -b;
-        for(int i = 0; i < b; i++) {
+        for (int i = 0; i < b; i++) {
             res = res*(1/a);
         }
     }
@@ -35,16 +35,16 @@ void inputMatrix(double **matrix, int matrixHeight, int matrixWidth) {
 
 void outputMatrix(double **matrix, int matrixHeight, int matrixWidth) {
     for (int i = 0; i < matrixHeight; i++) {
-        cout << "|| ";
+        cout << "| ";
         for (int j = 0; j < matrixWidth; j++) {
             cout << setw(4) << matrix[i][j] << " ";
         }
-        cout << "||";
+        cout << " |";
         cout << endl;
     }
-    //cout << endl;
 }
 
+//Output a matrix multiplied by a number with operands
 void outputWithMultipl (double **matrix_copy, double **matrix, int matrixHeight, int matrixWidth, double num) {
     for (int i = 0; i < matrixHeight; i++) {
         cout << "| ";
@@ -69,6 +69,7 @@ void outputWithMultipl (double **matrix_copy, double **matrix, int matrixHeight,
 
 }
 
+//Output a matrix divided by a number with operands
 void outputWithDivide (double **matrix_copy, double **matrix, int matrixHeight, int matrixWidth, double num) {
 
     for (int i = 0; i < matrixHeight; i++) {
@@ -93,6 +94,7 @@ void outputWithDivide (double **matrix_copy, double **matrix, int matrixHeight, 
     }
 }
 
+//Output a matrix multiplied by a matrix with operands
 void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMatrix, int mHeight, int mWidth, int m2Height, int m2Width) {
     int maxH = mHeight, maxW = mWidth;
     if (mHeight < m2Height) {
@@ -106,7 +108,7 @@ void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMat
         if (i < mHeight) {
             cout << "| ";
             for (int j = 0; j < mWidth; j ++) {
-                cout << setw(3) << matrix[i][j];
+                cout << setw(4) << matrix[i][j];
             }
             cout << " |";
         }
@@ -118,12 +120,12 @@ void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMat
         }
 
         if (i < m2Height) {
-            if(i >= mHeight) {
-                cout << setw(3*mWidth + 3 + 3);
+            if (i >= mHeight) {
+                cout << setw(4*mWidth + 3 + 3);
             }
             cout << "| ";
             for (int j = 0; j < m2Width; j++) {
-                cout << setw(3) << matrix2[i][j];
+                cout << setw(4) << matrix2[i][j];
             }
             cout << " |";
         }
@@ -137,7 +139,7 @@ void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMat
         if (i < mHeight) {
             cout << "| ";
             for (int j = 0; j < m2Width; j++) {
-                cout << setw(3) << resultMatrix[i][j];
+                cout << setw(4) << resultMatrix[i][j];
             }
             cout << " |";
         }
@@ -166,8 +168,12 @@ void divideMatrixByNum (double **matrix, int matrixHeight, int matrixWidth, doub
 }
 
 void transposeMatrix(double **matrix, int matrixHeight, int matrixWidth) {
+
     double **matrix_copy = new double*[matrixHeight];
-    //Copying matrix
+    for (int i = 0; i < matrixHeight; i++) {
+        matrix_copy[i] = new double[matrixWidth];
+    }
+    //Copying the matrix that will be transposed
     for (int i = 0; i < matrixHeight; i++) {
         for (int j = 0; j < matrixWidth; j++) {
            matrix_copy[i][j] = matrix[i][j];
@@ -176,10 +182,10 @@ void transposeMatrix(double **matrix, int matrixHeight, int matrixWidth) {
     //Transposing matrix
     for (int i = 0; i < matrixWidth; i++) {
         for (int j = 0; j < matrixHeight; j++) {
-           //matrix[j][i] = matrix_copy[i][j];
            matrix[i][j] = matrix_copy[j][i];
         }
     }
+    //deleting the copied matrix
     for (int i = 0; i < matrixHeight; i++) {
          delete []matrix_copy[i];
     }
@@ -198,7 +204,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
     //validation
     cout << matrixWidth << " " << matrix2Height << endl;
     if (matrixWidth != matrix2Height){
-        cout << "Invalid value";
+        cout << "Invalid value" << endl;
     }
     else{
         double **matrix2 = new double*[matrix2Height];
@@ -228,9 +234,10 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
                 }
             }
         }
-        cout << "here3" << endl;
+
         outputMatrixByMatrix(matrix, matrix2, resultMatrix, matrixHeight, matrixWidth, matrix2Height, matrix2Width);
 
+        //deleting matrices
         for (int i = 0; i < matrixHeight; i++) {
              delete []resultMatrix[i];
         }
@@ -242,6 +249,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
     }
 }
 
+//Find the determinant of a matrix 3 by 3
 double find_det_3_by_3(double **mat) {
     double det = 0;
 
@@ -251,7 +259,9 @@ double find_det_3_by_3(double **mat) {
     return det;
 }
 
+//Find the determinant of a matrix with dimensions up to 4 by 4
 double findDet (double **matrix, int matrixHeight, int matrixWidth) {
+
 
     if (matrixHeight != 1) {
 
@@ -266,6 +276,9 @@ double findDet (double **matrix, int matrixHeight, int matrixWidth) {
             det = find_det_3_by_3(matrix);
             return det;
         }
+
+        //Calculating the determinant of a 4x4 matrix
+        //Initializing a cofactor matrix
 
         double **cofMat = new double*[matrixHeight - 1];
         for (int i = 0; i < matrixHeight - 1; i++) {
@@ -282,7 +295,6 @@ double findDet (double **matrix, int matrixHeight, int matrixWidth) {
                     }
                 }
             }
-            outputMatrix(cofMat, 3, 3);
             det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
         }
         for (int i = 0; i < matrixHeight - 1; i++) {
@@ -292,14 +304,14 @@ double findDet (double **matrix, int matrixHeight, int matrixWidth) {
         return det;
     }
 
-    else if (matrixHeight == 1) {
+    else {
         return matrix[0][0];
     }
 }
 
+//Find the cofactor matrix for a given element (defined by its indexes)
 void findCofactor(double **matrix, double **cofMat, int matrixHeight, int matrixWidth, int row, int col) {
-    //cout << "row = " << row << endl;
-    //cout << "col = " << col << endl;
+
     for (int i = 0; i < matrixWidth - 1; i++) {
         for (int j = 0; j < matrixHeight - 1; j++) {
             if(i < row && j < col) {
@@ -385,6 +397,7 @@ int main (){
 
     int m = 0, n = 0;
 
+    //Operation multiply a matrix with a number
     if (operation == 1) {
         cout << "Input matrix width: "; //cols
         cin >> n;
@@ -411,12 +424,14 @@ int main (){
                     matrix_copy[i][j] = matrix[i][j];
                 }
             }
+
             cout << "Please input the number" << endl;
             int num = 0;
             cin >> num;
             cout << "Here is the result" << endl;
             multiplMatrixAndNum(matrix, m, n, num);
             outputWithMultipl(matrix_copy, matrix, m, n, num);
+
             for (int i = 0; i < m; i++) {
                  delete []matrix[i];
             }
@@ -429,6 +444,7 @@ int main (){
 
     }
 
+    //Operation multiply a matrix by another matrix
     if (operation == 2) {
         cout << "Input matrix width: ";
         cin >> n;
@@ -445,7 +461,9 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
             multiplMatrixByMatrix(matrix, m, n);
+
             for (int i = 0; i < n; i++) {
                  delete []matrix[i];
             }
@@ -453,13 +471,14 @@ int main (){
         }
     }
 
+    //Operation find the determinant of a matrix with dimensions up to 4 x 4
     if (operation == 3) {
         cout << "Input matrix width: ";
         cin >> n;
         cout << "Input matrix height: ";
         cin >> m;
         //validation
-        if (n != m || n <= 0 || m <= 0) {
+        if (n != m || n <= 0 || m <= 0 || n > 4 || m > 4 || n != m) {
             cout << "Invalid value";
         }
         else {
@@ -468,7 +487,9 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
             cout << "The determinant is: " << findDet(matrix, m, n);
+
             for (int i = 0; i < n; i++) {
                  delete []matrix[i];
             }
@@ -477,6 +498,7 @@ int main (){
 
     }
 
+    //Operation divide a matrix by a number
     if (operation == 4) {
         cout << "Input matrix width: ";
         cin >> n;
@@ -493,6 +515,7 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
             cout << "Please input the number" << endl;
             int num = 0;
             cin >> num;
@@ -500,19 +523,21 @@ int main (){
             if (num == 0){
                 cout << "Can't divide by zero! Sorry :(" << endl;
             }
+
             else {
-            double **matrix_copy = new double*[m];
-            for (int i = 0; i < m; i++) {
-                matrix_copy[i] = new double[n];
-            }
-            for (int i = 0; i < m; i++) {
-                for(int j = 0; j < n; j++) {
-                    matrix_copy[i][j] = matrix[i][j];
+                double **matrix_copy = new double*[m];
+                for (int i = 0; i < m; i++) {
+                    matrix_copy[i] = new double[n];
                 }
-            }
+                for (int i = 0; i < m; i++) {
+                    for(int j = 0; j < n; j++) {
+                        matrix_copy[i][j] = matrix[i][j];
+                    }
+                }
 
                 divideMatrixByNum(matrix, m, n, num);
                 outputWithDivide(matrix_copy, matrix, m, n, num);
+
                 for (int i = 0; i < m; i++) {
                      delete []matrix_copy[i];
                 }
@@ -529,6 +554,7 @@ int main (){
 
     }
 
+    //Operation find the inverse of a matrix with dimensions up to 4 x 4
     if (operation == 5) {
         cout << "Input matrix wight: ";
         cin >> n;
@@ -536,7 +562,7 @@ int main (){
         cin >> m;
 
         //validation
-        if (n != m || n <= 0 || m <= 0) {
+        if (n != m || n <= 0 || m <= 0 || n > 4 || m < 4) {
             cout << "Invalid value";
         }
         else {
@@ -545,8 +571,10 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
             findInverseMatrix(matrix, m, n);
             outputMatrix(matrix, m, n);
+
             for (int i = 0; i < n; i++) {
                  delete []matrix[i];
             }
@@ -555,6 +583,7 @@ int main (){
 
     }
 
+    //Operation transpose a matrix
     if (operation == 6) {
         cout << "Input matrix width: ";
         cin >> n;
@@ -571,14 +600,20 @@ int main (){
                 matrix[i] = new double[n];
             }
             inputMatrix(matrix, m, n);
+
             transposeMatrix(matrix, m, n);
             outputMatrix(matrix, n, m);
+
             for (int i = 0; i < n; i++) {
                  delete []matrix[i];
             }
             delete []matrix;
         }
 
+    }
+
+    if (!(operation >= 1 && operation <= 6)) {
+        cout << "We don't have such operation, sorry!" << endl;
     }
 
 return 0;
