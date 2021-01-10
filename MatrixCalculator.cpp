@@ -1,6 +1,18 @@
-//Notes to me
-//func inverse matrix doesn't work with 2x2 matrix
-//delete
+/**
+*
+* Solution to course project # 6
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2020/2021
+*
+* @author Dimana Vyatrova
+* @idnumber 62516
+* @compiler gcc
+*
+* <file with the code for the whole project>
+*
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -58,7 +70,7 @@ void outputWithMultipl (double **matrix_copy, double **matrix, int matrixHeight,
         else {
             cout << "       ";
         }
-        //cout << "------------   ";
+
         cout << "| ";
         for (int j = 0; j < matrixWidth; j++) {
             cout << setw(3) << matrix[i][j];
@@ -103,8 +115,8 @@ void outputMatrixByMatrix (double **matrix, double **matrix2, double **resultMat
     if (mWidth < m2Width) {
         maxW = m2Width;
     }
-    for (int i = 0; i < maxH; i++) {
 
+    for (int i = 0; i < maxH; i++) {
         if (i < mHeight) {
             cout << "| ";
             for (int j = 0; j < mWidth; j ++) {
@@ -173,18 +185,21 @@ void transposeMatrix(double **matrix, int matrixHeight, int matrixWidth) {
     for (int i = 0; i < matrixHeight; i++) {
         matrix_copy[i] = new double[matrixWidth];
     }
+
     //Copying the matrix that will be transposed
     for (int i = 0; i < matrixHeight; i++) {
         for (int j = 0; j < matrixWidth; j++) {
            matrix_copy[i][j] = matrix[i][j];
         }
     }
+
     //Transposing matrix
     for (int i = 0; i < matrixWidth; i++) {
         for (int j = 0; j < matrixHeight; j++) {
            matrix[i][j] = matrix_copy[j][i];
         }
     }
+
     //deleting the copied matrix
     for (int i = 0; i < matrixHeight; i++) {
          delete []matrix_copy[i];
@@ -207,6 +222,7 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
         cout << "Invalid value" << endl;
     }
     else{
+        //Initialize and input the second matrix
         double **matrix2 = new double*[matrix2Height];
         for (int i = 0; i < matrix2Height; i++) {
             matrix2[i] = new double[matrix2Width];
@@ -227,9 +243,10 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
         }
 
         //Multiply both matrices and store the result in the result matrix
-        for (int i = 0; i < matrix2Width; i++) {
-            for (int j = 0; j < matrixHeight; j++) {
+        for (int i = 0; i < matrixHeight; i++) {
+            for (int j = 0; j < matrix2Width; j++) {
                 for (int k = 0; k < matrix2Height; k ++) {
+                    cout << "i = " << i << " j = " << j << " = " << "i = " << i << " j = " << j  << " + " << "i = " << i << " k= " << k << " * " << " k = " << k << " j = " << j << endl;
                     resultMatrix[i][j] += matrix[i][k] * matrix2[k][j];
                 }
             }
@@ -279,11 +296,11 @@ double findDet (double **matrix, int matrixHeight, int matrixWidth) {
 
         //Calculating the determinant of a 4x4 matrix
         //Initializing a cofactor matrix
-
         double **cofMat = new double*[matrixHeight - 1];
         for (int i = 0; i < matrixHeight - 1; i++) {
             cofMat[i] = new double[matrixWidth - 1];
         }
+
         for (int c = 0; c < matrixWidth; c++) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -297,10 +314,12 @@ double findDet (double **matrix, int matrixHeight, int matrixWidth) {
             }
             det = det + matrix[0][c]*myPow(-1, c + 2) * find_det_3_by_3(cofMat);
         }
+
         for (int i = 0; i < matrixHeight - 1; i++) {
              delete []cofMat[i];
         }
         delete []cofMat;
+
         return det;
     }
 
@@ -328,6 +347,7 @@ void findCofactor(double **matrix, double **cofMat, int matrixHeight, int matrix
             }
         }
     }
+
 }
 
 void findInverseMatrix (double **matrix, int matrixHeight, int matrixWidth) {
@@ -349,12 +369,15 @@ void findInverseMatrix (double **matrix, int matrixHeight, int matrixWidth) {
     for (int i = 0; i < matrixHeight - 1; i++) {
         cofMat[i] = new double[matrixWidth - 1];
     }
+
+    //Find the adjuncts of every element
     for (int i = 0; i < matrixHeight; i++) { //row
         for (int j = 0; j < matrixWidth; j++) { //col
             findCofactor(matrix_Copy, cofMat, matrixHeight, matrixWidth, i, j);
             matrix[i][j] = myPow(-1, i + j) * findDet(cofMat, matrixHeight - 1, matrixWidth - 1);
         }
     }
+
     for (int i = 0; i < matrixHeight - 1; i++) {
          delete []cofMat[i];
     }
@@ -363,6 +386,7 @@ void findInverseMatrix (double **matrix, int matrixHeight, int matrixWidth) {
          delete []matrix_Copy[i];
     }
     delete []matrix_Copy;
+
     transposeMatrix(matrix, matrixHeight, matrixWidth);
     multiplMatrixAndNum(matrix, matrixHeight, matrixWidth, 1/det);
 }
