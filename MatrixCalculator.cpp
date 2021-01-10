@@ -217,11 +217,11 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
     cin >> matrix2Height;
 
     //validation
-    cout << matrixWidth << " " << matrix2Height << endl;
     if (matrixWidth != matrix2Height){
         cout << "Invalid value" << endl;
     }
     else{
+
         //Initialize and input the second matrix
         double **matrix2 = new double*[matrix2Height];
         for (int i = 0; i < matrix2Height; i++) {
@@ -246,7 +246,6 @@ void multiplMatrixByMatrix (double **matrix, int matrixHeight, int matrixWidth) 
         for (int i = 0; i < matrixHeight; i++) {
             for (int j = 0; j < matrix2Width; j++) {
                 for (int k = 0; k < matrix2Height; k ++) {
-                    cout << "i = " << i << " j = " << j << " = " << "i = " << i << " j = " << j  << " + " << "i = " << i << " k= " << k << " * " << " k = " << k << " j = " << j << endl;
                     resultMatrix[i][j] += matrix[i][k] * matrix2[k][j];
                 }
             }
@@ -394,6 +393,7 @@ void findInverseMatrix (double **matrix, int matrixHeight, int matrixWidth) {
 int main (){
     const size_t STRING_SIZE = 100;
     char str[STRING_SIZE];
+
     ifstream inputFile;
     string filename;
     cout << "Please input 'menu.txt' to open the file with instructions" << endl;
