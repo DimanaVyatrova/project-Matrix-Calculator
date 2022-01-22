@@ -12,4 +12,4 @@ It ca perform the following operations:
 6. Transpose a matrix
 
 The user is asked to open a file, that contains the possible operations
-and then input the number of the operation he/she wishes to perform=
+and then input the number of the operation he/she wishes to perform
